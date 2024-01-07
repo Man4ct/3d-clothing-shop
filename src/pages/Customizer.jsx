@@ -48,16 +48,23 @@ const Customizer = () => {
             break;
         case "stylishShirt":
             state.isFullTexture = !activeFilterTab[tabName]
+            break;
         default:
             state.isLogoTexture = true
             state.isFullTexture = false
             break;
     }
+
+    setActiveFilterTab((prevState) =>{
+        return {
+            ...prevState,
+            [tabName]: !prevState[tabName]
+        }
+    })
   }
 
   const handleDecals = (type, result) => {
     const decalType = DecalTypes[type]
-    console.log('TETETETS')
     state[decalType.stateProperty] = result
 
     if(!activeFilterTab[decalType.filterTab]){

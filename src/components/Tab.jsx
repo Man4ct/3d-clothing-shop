@@ -2,11 +2,11 @@ import { useSnapshot } from 'valtio';
 
 import state from '../store';
 
-const Tab = ({ tab, isFIlterTab, isActiveTab, handleClick }) => {
+const Tab = ({ tab, isFilterTab, isActiveTab, handleClick }) => {
   const snap = useSnapshot(state);
 
   const activeStyles =
-    isFIlterTab && isActiveTab
+    isFilterTab && isActiveTab
       ? {
           backgroundColor: snap.color,
           opacity: 0.5,
@@ -19,7 +19,7 @@ const Tab = ({ tab, isFIlterTab, isActiveTab, handleClick }) => {
     <div
       key={tab.name}
       className={`tab-btn ${
-        isFIlterTab ? 'rounded-full glassmorhism' : 'rounded-4'
+        isFilterTab ? 'rounded-full glassmorhism' : 'rounded-4'
       }`}
       onClick={handleClick}
       style={activeStyles}
@@ -27,7 +27,7 @@ const Tab = ({ tab, isFIlterTab, isActiveTab, handleClick }) => {
       <img
         src={tab.icon}
         alt={tab.name}
-        className={`${isFIlterTab ? 'w-2/3 h-2/3' : 'w-11/12 h-11/12 object-contain'} `}
+        className={`${isFilterTab ? 'w-2/3 h-2/3' : 'w-11/12 h-11/12 object-contain'} `}
       />
     </div>
   );
