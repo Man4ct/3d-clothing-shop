@@ -30,12 +30,51 @@ const Customizer = () => {
     switch (activeEditorTab) {
       case 'colorpicker':
         return <ColorPicker />;
-      case 'file':
-        return <FilePicker />;
+      case 'filepicker':
+        return <FilePicker
+        file={file}
+        setFile={setFile}
+        readFile={readFile}
+        />;
       default:
         return null;
     }
   };
+
+  const handleActiveFilterTab = (tabName) => {
+    switch (tabName) {
+        case "logoShirt":
+            state.isLogoTexture = !activeFilterTab[tabName]
+            break;
+        case "stylishShirt":
+            state.isFullTexture = !activeFilterTab[tabName]
+        default:
+            state.isLogoTexture = true
+            state.isFullTexture = false
+            break;
+    }
+  }
+
+  const handleDecals = (type, result) => {
+    const decalType = DecalTypes[type]
+    console.log('TETETETS')
+    state[decalType.stateProperty] = result
+
+    if(!activeFilterTab[decalType.filterTab]){
+        handleActiveFilterTab(decalType.filterTab)
+    }
+  }
+  const readFile = (type) => {
+    reader(file)
+    .then((result) => {
+
+        handleDecals(type, result)
+        setActiveEditorTab("")
+    })
+    .catch((error) => {
+        console.log(error)
+    })
+  }
   return (
     <AnimatePresence>
       {!snap.intro && (
@@ -78,8 +117,8 @@ const Customizer = () => {
                 key={tab.name}
                 tab={tab}
                 isFilterTab
-                isActiveTab=''
-                handleClick={() => {}}
+                isActiveTab={activeFilterTab[tab.name]}
+                handleClick={() => handleActiveFilterTab(tab.name)}
               />
             ))}
           </motion.div>
