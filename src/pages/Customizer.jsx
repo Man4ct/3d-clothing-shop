@@ -3,12 +3,10 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useSnapshot } from 'valtio';
 import {
   CustomButton,
-  AIPicker,
   ColorPicker,
   FilePicker,
   Tab,
 } from '../components';
-import config from '../config/config';
 import { download } from '../assets';
 import { downloadCanvasToImage, reader } from '../config/helpers';
 import { EditorTabs, FilterTabs, DecalTypes } from '../config/constants';
@@ -25,63 +23,62 @@ const Customizer = () => {
     logoShirt: true,
     stylishShirt: false,
   });
-  //show tab content depending on the activeTab
+  const toggleActiveEditorTab = (tabName) => {
+    setActiveEditorTab((prevTab) => (prevTab === tabName ? '' : tabName));
+  };
+
   const generateTabContent = () => {
     switch (activeEditorTab) {
       case 'colorpicker':
         return <ColorPicker />;
       case 'filepicker':
-        return <FilePicker
-        file={file}
-        setFile={setFile}
-        readFile={readFile}
-        />;
+        return <FilePicker file={file} setFile={setFile} readFile={readFile} />;
       default:
         return null;
     }
   };
 
+
   const handleActiveFilterTab = (tabName) => {
     switch (tabName) {
-        case "logoShirt":
-            state.isLogoTexture = !activeFilterTab[tabName]
-            break;
-        case "stylishShirt":
-            state.isFullTexture = !activeFilterTab[tabName]
-            break;
-        default:
-            state.isLogoTexture = true
-            state.isFullTexture = false
-            break;
+      case 'logoShirt':
+        state.isLogoTexture = !activeFilterTab[tabName];
+        break;
+      case 'stylishShirt':
+        state.isFullTexture = !activeFilterTab[tabName];
+        break;
+      default:
+        state.isLogoTexture = true;
+        state.isFullTexture = false;
+        break;
     }
 
-    setActiveFilterTab((prevState) =>{
-        return {
-            ...prevState,
-            [tabName]: !prevState[tabName]
-        }
-    })
-  }
+    setActiveFilterTab((prevState) => {
+      return {
+        ...prevState,
+        [tabName]: !prevState[tabName],
+      };
+    });
+  };
 
   const handleDecals = (type, result) => {
-    const decalType = DecalTypes[type]
-    state[decalType.stateProperty] = result
+    const decalType = DecalTypes[type];
+    state[decalType.stateProperty] = result;
 
-    if(!activeFilterTab[decalType.filterTab]){
-        handleActiveFilterTab(decalType.filterTab)
+    if (!activeFilterTab[decalType.filterTab]) {
+      handleActiveFilterTab(decalType.filterTab);
     }
-  }
+  };
   const readFile = (type) => {
     reader(file)
-    .then((result) => {
-
-        handleDecals(type, result)
-        setActiveEditorTab("")
-    })
-    .catch((error) => {
-        console.log(error)
-    })
-  }
+      .then((result) => {
+        handleDecals(type, result);
+        setActiveEditorTab('');
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   return (
     <AnimatePresence>
       {!snap.intro && (
@@ -95,10 +92,11 @@ const Customizer = () => {
               <div className='editortabs-container tabs'>
                 {EditorTabs.map((tab) => (
                   <Tab
-                    key={tab.name}
-                    tab={tab}
-                    handleClick={() => setActiveEditorTab(tab.name)}
-                  />
+                  key={tab.name}
+                  tab={tab}
+                  isActiveTab={activeEditorTab === tab.name}
+                  handleClick={() => toggleActiveEditorTab(tab.name)}
+                />
                 ))}
                 {generateTabContent()}
               </div>
@@ -128,6 +126,13 @@ const Customizer = () => {
                 handleClick={() => handleActiveFilterTab(tab.name)}
               />
             ))}
+            <button className='download-btn' onClick={downloadCanvasToImage}>
+              <img
+                src={download}
+                alt='download_image'
+                className='w-3/5 h-3/5 object-contain'
+              />
+            </button>
           </motion.div>
         </>
       )}

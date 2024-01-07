@@ -1,22 +1,20 @@
+import React, { useEffect, useRef } from 'react';
 import { useSnapshot } from 'valtio';
-
 import state from '../store';
 
 const Tab = ({ tab, isFilterTab, isActiveTab, handleClick }) => {
   const snap = useSnapshot(state);
+  const tabRef = useRef(null);
 
-  const activeStyles =
-    isFilterTab && isActiveTab
-      ? {
-          backgroundColor: snap.color,
-          opacity: 0.5,
-        }
-      : {
-          backgroundColor: 'transparent',
-          opacity: 1,
-        };
+
+  const activeStyles = {
+    backgroundColor: isActiveTab && isFilterTab ? snap.color : 'transparent',
+    opacity: isActiveTab && isFilterTab ? 0.5 : 1,
+  };
+
   return (
     <div
+      ref={tabRef}
       key={tab.name}
       className={`tab-btn ${
         isFilterTab ? 'rounded-full glassmorhism' : 'rounded-4'
@@ -32,4 +30,5 @@ const Tab = ({ tab, isFilterTab, isActiveTab, handleClick }) => {
     </div>
   );
 };
+
 export default Tab;
